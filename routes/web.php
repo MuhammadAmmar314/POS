@@ -22,7 +22,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 
 Route::resource('/carts', App\Http\Controllers\CartController::class);
-Route::get('/carts/{id}/api', [App\Http\Controllers\CartController::class, 'api'])->name('carts.api');
+Route::get('/api/carts', [App\Http\Controllers\CartController::class, 'api'])->name('carts.api');
 Route::get('/carts/loadform/{total}/{diterima}', [App\Http\Controllers\CartController::class, 'loadForm'])->name('carts.load_form');
 
 Route::resource('/invoices', App\Http\Controllers\InvoiceController::class);

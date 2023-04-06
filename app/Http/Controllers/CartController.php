@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Invoice;
 use App\Models\Member;
 use App\Models\Product;
+use Illuminate\Console\View\Components\Alert;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -13,23 +14,26 @@ class CartController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         $products = Product::orderBy('product_name')->get();
         $members = Member::orderBy('member_name')->get();
 
-        if ($invoice_id = session('id')) {
-            $invoice = Invoice::find($invoice_id);
-            $memberSelected = $invoice->member_id ?? new Member();
-
-            
-            return view('admin.cart.cart' , compact('products' , 'members' , 'invoice' , 'invoice_id' , 'memberSelected'));
+        if ($code = session('id')) {
+            return view('admin.cart.cart' , compact('products' , 'members' , 'code'));
+        } else {
+            return view('admin.cart.failed');
         }
     }
 
-    public function api($id)
+    public function api()
     {
-        $carts = Cart::with('products')->where('invoice_id' , $id)->get();
+        $carts = Cart::with('products')->get();
 
         $data = array();
         $total_transaction = 0;
@@ -82,7 +86,6 @@ class CartController extends Controller
         }
         
         $detail = new Cart();
-        $detail->invoice_id = $request->invoice_id;
         $detail->product_id = $product->id;
         $detail->product_price = $product->product_price;
         $detail->qty = 1;

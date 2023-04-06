@@ -41,10 +41,10 @@
                 <form class="form-produk">
                     @csrf
                     <div class="form-group row">
-                        <label for="kode_produk" class="col-lg-2">Kode Produk</label>
+                        <label for="product_id" class="col-lg-2">Product ID</label>
                         <div class="col-lg-5">
                             <div class="input-group">
-                                <input type="hidden" name="invoice_id" id="invoice_id" value="{{ $invoice_id }}">
+                                <input type="hidden" name="code" id="code" value="{{ $code }}">
                                 <input type="text" class="form-control" name="product_id" id="product_id">
                                 <span class="input-group-btn">
                                     <button @click="tampilProduk()" class="btn btn-info btn-flat" type="button"><i class="fa fa-arrow-right"></i></button>
@@ -74,8 +74,7 @@
                     <div class="col-lg-4">
                         <form action="{{ route('invoices.store') }}" class="form-penjualan" method="post">
                             @csrf
-                            <input type="hidden" name="id" value="{{ $invoice_id }}">
-                            <!-- <input type="hidden" name="total" id="total"> -->
+                            <input type="hidden" name="code" value="{{ $code }}">
                             <input type="hidden" name="total_item" id="total_item">
                             <input type="hidden" name="total_transaction" id="total_transaction">
                             <input type="hidden" name="member_id" id="member_id">
@@ -158,7 +157,7 @@
                         serverSide: true,
                         autoWidth: false,
                         ajax: {
-                            url: '{{ route('carts.api', $invoice_id) }}',
+                            url: '{{ route('carts.api') }}',
                         },
                         columns: [
                             {data: 'DT_RowIndex', class: 'text-center', sortable: false},
@@ -300,9 +299,7 @@
                     'qty': jumlah
                 })
                 .done(response => {
-                    $(this).on('keydown', function () {
-                        $('#cart_list').DataTable().ajax.reload();
-                    });
+                    $('#cart_list').DataTable().ajax.reload();
                 })
                 .fail(errors => {
                     alert('Tidak dapat menyimpan data');

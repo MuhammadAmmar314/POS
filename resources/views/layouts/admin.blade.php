@@ -73,7 +73,7 @@
                     <a href="#" class="d-block">{{ auth()->user()->name }}</a>  
                     </div>  
                 </div>
-
+                
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -81,8 +81,8 @@
                         with font-awesome or any other icon font library -->
                         <li class="nav-item">
                             <a href="{{ route('invoices.create') }}" class="nav-link {{ request()->is('carts') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-th"></i>
-                                <p>POS</p>
+                                <i class="nav-icon fas fa-plus"></i>
+                                <p>New POS</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -128,7 +128,7 @@
                         </li>
                         <li class="nav-item">
                             <a href="{{ url('invoices') }}" class="nav-link {{ request()->is('invoices') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-th"></i>
+                                <i class="nav-icon fas fa-copy"></i>
                                 <p>Sales List</p>
                             </a>
                         </li>   

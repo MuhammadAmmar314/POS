@@ -66,6 +66,10 @@
                 datatable(){
                     const _this = this;
                     _this.table = $('#table2').DataTable({
+                        responsive: true,
+                        processing: true,
+                        serverSide: true,
+                        autoWidth: false,
                         ajax: {
                             url:'{{ url('api/invoices') }}',
                         },
@@ -77,7 +81,9 @@
                             {data: 'total_item', class: 'text-center', orderable: false},
                             {data: 'total_transaction', class: 'text-center', orderable: false},
                             {data: 'action', class: 'text-center', sortable: false},
-                        ]
+                        ],
+                        dom: 'Brt',
+                        bSort: false,
                     });
                 },
 

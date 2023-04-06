@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Invoice;
+use App\Models\InvoiceDetail;
 use App\Models\Member;
 use App\Models\Product;
 use App\Models\ProductCategory;

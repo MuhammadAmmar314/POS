@@ -4,15 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Invoice;
+use App\Models\InvoiceDetail;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class InvoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         return view('admin.invoices.index');
@@ -21,11 +28,6 @@ class InvoiceController extends Controller
     public function api()
     {
         $invoices = Invoice::with('member')->orderBy('created_at' , 'desc')->get();
-        // $invoices = Invoice::join('members' , 'members.id' , '=' , 'invoices.member_id')
-        //                     ->select('invoices.id' , 'invoices.created_at' , 'invoices.member_id' , 'members.member_name' , 'total_item' , 'total_transaction')
-        //                     ->orderBy('invoices.created_at' , 'desc')
-        //                     ->get();
-        // return $invoices;
 
         return datatables()
             ->of($invoices)
@@ -37,8 +39,6 @@ class InvoiceController extends Controller
                 return 'Rp. '. format_uang($invoices->total_transaction) .',-';
             })
             ->addColumn('transaction_date', function ($invoices) {
-                // $date = Carbon::parse($invoices->created_at);
-                // return $date->format('d M Y');
                 return tanggal_indonesia($invoices->created_at, false);
             })
             ->addColumn('action', function ($invoices) {
@@ -58,15 +58,12 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        $invoice = new Invoice();
-        $invoice->member_id = null;
-        $invoice->total_item = 0;
-        $invoice->total_transaction = 0;
-        $invoice->payment = 0;
-        $invoice->save();
-
-        session(['id' => $invoice->id]);
-        return redirect()->route('carts.index');
+        if (session()->has('id')){
+            return redirect()->route('carts.index');
+        } else {
+            session(['id' => Str::random()]);
+            return redirect()->route('carts.index');
+        }
     }
 
     /**
@@ -74,20 +71,33 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $invoice = Invoice::findOrFail($request->id);
-        $invoice->id = $request->id;
-        $invoice->member_id = $request->member_id;
-        $invoice->total_item = $request->total_item;
-        $invoice->total_transaction = $request->total_transaction;
-        $invoice->payment = $request->payment;
-        $invoice->update();
+        if($request->code == session('id')){
+            $carts = Cart::get();
 
-        $cart = Cart::where('invoice_id', $invoice->id)->get();
-        foreach ($cart as $item) {
-            $product = Product::find($item->product_id);
-            $product->product_quantity -= $item->qty;
-            $product->update();
+            $invoice = Invoice::create([
+                'member_id' => $request->input('member_id'),
+                'total_item' => $request->input('total_item'),
+                'total_transaction' => $request->input('total_transaction'),
+                'payment' => $request->input('payment'),
+            ]);
+            foreach ($carts as $item){
+                $detail = InvoiceDetail::create([
+                    'invoice_id' => $invoice->id,
+                    'product_id' => $item->product_id,
+                    'qty' => $item->qty,
+                    'product_price' => $item->product_price,
+                    'subtotal' => $item->subtotal,
+                ]);
+
+                $product = Product::find($item->product_id);
+                $product->product_quantity -= $item->qty;
+                $product->update();
+
+                $item->delete();
+            }
         }
+
+        session()->pull('id');
 
         return view('admin.invoices.succeed');
     }
@@ -97,19 +107,19 @@ class InvoiceController extends Controller
      */
     public function show($id)
     {
-        $carts = Cart::with('products')->where('invoice_id', $id)->get();
+        $detail = InvoiceDetail::with('products')->where('invoice_id', $id)->get();
 
         return datatables()
-            ->of($carts)
+            ->of($detail)
             ->addIndexColumn()
-            ->addColumn('product_name', function ($carts) {
-                return $carts->products->product_name;
+            ->addColumn('product_name', function ($detail) {
+                return $detail->products->product_name;
             })
-            ->editColumn('product_price', function ($carts) {
-                return 'Rp. '. format_uang($carts->product_price);
+            ->editColumn('product_price', function ($detail) {
+                return 'Rp. '. format_uang($detail->product_price);
             })
-            ->editColumn('subtotal', function ($carts) {
-                return 'Rp. '. format_uang($carts->subtotal);
+            ->editColumn('subtotal', function ($detail) {
+                return 'Rp. '. format_uang($detail->subtotal);
             })
             ->make(true);
     }
@@ -136,9 +146,9 @@ class InvoiceController extends Controller
     public function destroy($id)
     {
         $invoice = Invoice::find($id);
-        $carts    = Cart::where('invoice_id', $invoice->id)->get();
+        $detail    = InvoiceDetail::where('invoice_id', $invoice->id)->get();
         
-        foreach ($carts as $item) {
+        foreach ($detail as $item) {
             $product = Product::find($item->product_id);
             if ($product) {
                 $product->product_quantity += $item->qty;
