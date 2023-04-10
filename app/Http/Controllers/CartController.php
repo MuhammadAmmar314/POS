@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Invoice;
 use App\Models\Member;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Console\View\Components\Alert;
 use Illuminate\Http\Request;
 
@@ -23,9 +24,10 @@ class CartController extends Controller
     {
         $products = Product::orderBy('product_name')->get();
         $members = Member::orderBy('member_name')->get();
+        $user = auth()->user();
 
         if ($code = session('id')) {
-            return view('admin.cart.cart' , compact('products' , 'members' , 'code'));
+            return view('admin.cart.cart' , compact('products' , 'members' , 'code' , 'user'));
         } else {
             return view('admin.cart.failed');
         }
@@ -52,9 +54,11 @@ class CartController extends Controller
 
             $total_transaction += $item->product_price * $item->qty;
             $total_item += $item->qty;
+            // $id_user = $item->user_id;
         }
+        
         $data[] = [
-            'product_id'     => "<div class='total_transaction d-none'>". $total_transaction ."</div> <div class='total_item d-none'>". $total_item ."</div>",
+            'product_id'     => "<div class='total_transaction'>". $total_transaction ."</div> <div class='total_item'>". $total_item ."</div>",
             'product_name'   => '',
             'product_price'  => '',
             'qty'            => '',
@@ -90,6 +94,7 @@ class CartController extends Controller
         $detail->product_price = $product->product_price;
         $detail->qty = 1;
         $detail->subtotal =$product->product_price;
+        $detail->user_id = $request->user_id;
         $detail->save();
 
         return response()->json('Data berhasil disimpan', 200);

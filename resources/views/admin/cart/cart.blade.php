@@ -45,6 +45,7 @@
                         <div class="col-lg-5">
                             <div class="input-group">
                                 <input type="hidden" name="code" id="code" value="{{ $code }}">
+                                <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
                                 <input type="text" class="form-control" name="product_id" id="product_id">
                                 <span class="input-group-btn">
                                     <button @click="tampilProduk()" class="btn btn-info btn-flat" type="button"><i class="fa fa-arrow-right"></i></button>
@@ -78,6 +79,7 @@
                             <input type="hidden" name="total_item" id="total_item">
                             <input type="hidden" name="total_transaction" id="total_transaction">
                             <input type="hidden" name="member_id" id="member_id">
+                            <input type="hidden" name="user_id" value="{{ $user->id }}">
                             
                             <div class="form-group row">
                                 <label for="id_member" class="col-lg-2 control-label">Member</label>

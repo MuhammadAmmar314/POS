@@ -18,7 +18,11 @@ class Product extends Model
         return $this->belongsTo('App\Models\ProductUnit' , 'unit_id');
     }
 
-    public function products (){
+    public function carts (){
         return $this->hasMany('App\Models\Cart' , 'product_id');
+    }
+
+    public function invoice_details (){
+        return $this->hasMany('App\Models\InvoiceDetail' , 'product_id');
     }
 }

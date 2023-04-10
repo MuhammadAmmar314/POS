@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\Product;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -79,6 +80,7 @@ class InvoiceController extends Controller
                 'total_item' => $request->input('total_item'),
                 'total_transaction' => $request->input('total_transaction'),
                 'payment' => $request->input('payment'),
+                'user_id' => $request->input('user_id'),
             ]);
             foreach ($carts as $item){
                 $detail = InvoiceDetail::create([

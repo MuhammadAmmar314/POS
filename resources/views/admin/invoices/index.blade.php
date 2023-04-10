@@ -23,6 +23,7 @@
                             <th>Member Name</th>
                             <th>Total Item</th>
                             <th>Total Price</th>
+                            <th>User ID</th>
                             <th width="15%"><i class="fa fa-cog"></i></th>
                         </tr>
                     </thead>
@@ -80,6 +81,7 @@
                             {data: 'member_name', class: 'text-center', orderable: false},
                             {data: 'total_item', class: 'text-center', orderable: false},
                             {data: 'total_transaction', class: 'text-center', orderable: false},
+                            {data: 'user_id', class: 'text-center', orderable: false},
                             {data: 'action', class: 'text-center', sortable: false},
                         ],
                         dom: 'Brt',
