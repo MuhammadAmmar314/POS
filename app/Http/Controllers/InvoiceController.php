@@ -73,7 +73,7 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         if($request->code == session('id')){
-            $carts = Cart::get();
+            $carts = Cart::where('user_id' , '=' , $request->input('user_id'))->get();
 
             $invoice = Invoice::create([
                 'member_id' => $request->input('member_id'),

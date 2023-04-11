@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Console\View\Components\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -22,7 +23,7 @@ class CartController extends Controller
 
     public function index()
     {
-        $products = Product::orderBy('product_name')->get();
+        $products = Product::where('product_quantity' , '>' , 0)->orderBy('product_name')->get();
         $members = Member::orderBy('member_name')->get();
         $user = auth()->user();
 
@@ -35,7 +36,8 @@ class CartController extends Controller
 
     public function api()
     {
-        $carts = Cart::with('products')->get();
+        $userId = Auth::user()->id;
+        $carts = Cart::with('products')->where('user_id' , '=' , $userId)->get();
 
         $data = array();
         $total_transaction = 0;
