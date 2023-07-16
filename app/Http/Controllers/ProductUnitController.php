@@ -43,7 +43,7 @@ class ProductUnitController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'unit_name' => ['required' , 'string' , 'min:5'],
+            'unit_name' => ['required' , 'string'],
         ]);
 
         ProductUnit::create($request->all());

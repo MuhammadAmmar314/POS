@@ -47,7 +47,7 @@ class ProductCategoryController extends Controller
 
         ProductCategory::create($request->all());
 
-        return redirect(('product_categories'));
+        return redirect('product_categories');
     }
 
     /**
@@ -77,7 +77,7 @@ class ProductCategoryController extends Controller
         
         $productCategory->update($request->all());
 
-        return redirect(('product_categories'));
+        return redirect('product_categories');
     }
 
     /**
