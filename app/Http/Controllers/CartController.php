@@ -37,7 +37,7 @@ class CartController extends Controller
     public function api()
     {
         $userId = Auth::user()->id;
-        $carts = Cart::with('products')->where('user_id' , '=' , $userId)->get();
+        $carts = Cart::with('product')->where('user_id' , '=' , $userId)->get();
 
         $data = array();
         $total_transaction = 0;
@@ -47,7 +47,7 @@ class CartController extends Controller
         foreach ($carts as $item) {
             $row = array();
             $row['product_id'] = $item->product_id;
-            $row['product_name'] = $item->products['product_name'];
+            $row['product_name'] = $item->product['product_name'];
             $row['product_price']  = 'Rp. '. format_uang($item->product_price);
             $row['qty']      = "<input type='number' class='form-control input-sm quantity' style='width: 80px' data-id='". $item->id ."' value='". $item->qty ."'>";
             $row['subtotal']    = 'Rp. '. format_uang($item->subtotal);

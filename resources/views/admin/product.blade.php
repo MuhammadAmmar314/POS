@@ -11,7 +11,7 @@
 @section('content')
     <div id="controller" class="card">
         <div clas="row">
-            <div class="col-md-5 offset-md-3">
+            <div class="col-md-4 mt-3 offset-md-4">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
@@ -19,10 +19,7 @@
                     <input type="text" class="form-control" autocomplete="off" placeholder="Search from product" v-model="search">
                 </div>
             </div>
-
-            <div class="col-md-2">
-                <button class="btn btn-primary" @click="addData()">Create New Product</button>   
-            </div>
+            <button class="btn btn-primary mb-2 ml-2" @click="addData()">Create New Product</button> 
         </div>
 
         <div class="row bg-light">
